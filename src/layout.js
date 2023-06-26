@@ -4,14 +4,14 @@ import defaults from './defaults';
 
 const elkOverrides = {};
 
-const getPos = function (ele, options) {
+const getPos = function(ele, options) {
   const dims = ele.layoutDimensions(options);
   let parent = ele.parent();
   const k = ele.scratch('elk');
 
   const p = {
     x: k.x,
-    y: k.y,
+    y: k.y
   };
 
   while (parent.nonempty()) {
@@ -28,18 +28,17 @@ const getPos = function (ele, options) {
   return p;
 };
 
-const makeNode = function (node, options) {
+const makeNode = function(node, options) {
   const k = {
     // _cyEle: node,
-    id: node.id(),
+    id: node.id()
   };
 
   // Apply nodeLayoutOptions per user-specified function
   // e.g. nodeLayoutOptions => n.scratch('layoutOptions')
-  if (options.nodeLayoutOptions){
+  if (options.nodeLayoutOptions) {
     k.layoutOptions = options.nodeLayoutOptions(node);
   }
-
 
 
   if (!node.isParent()) {
@@ -59,12 +58,12 @@ const makeNode = function (node, options) {
   return k;
 };
 
-const makeEdge = function (edge /*, options*/) {
+const makeEdge = function(edge /*, options*/) {
   const k = {
     // _cyEle: edge,
     id: edge.id(),
     source: edge.data('source'),
-    target: edge.data('target'),
+    target: edge.data('target')
   };
 
   edge.scratch('elk', k);
@@ -72,14 +71,14 @@ const makeEdge = function (edge /*, options*/) {
   return k;
 };
 
-const makeGraph = function (nodes, edges, options) {
+const makeGraph = function(nodes, edges, options) {
   const elkNodes = [];
   const elkEdges = [];
   const elkEleLookup = {};
   const graph = {
     id: 'root',
     children: [],
-    edges: [],
+    edges: []
   };
 
   // map all nodes
@@ -141,16 +140,29 @@ const makeGraph = function (nodes, edges, options) {
   return graph;
 };
 
+const printGraph = function(graph) {
+  const myGraph = graph;
+  myGraph['children'] = graph['children'].map(d => {
+    delete d['_cyEle'];
+    return d;
+  });
+  myGraph['edges'] = graph['edges'].map(d => {
+    delete d['_cyEle'];
+    return d;
+  });
+  console.log('ELK GRAPH', JSON.stringify(myGraph, null, 2));
+};
+
 class Layout {
   constructor(options) {
     const elkOptions = options.elk;
-    const {cy} = options;
+    const { cy } = options;
 
     this.options = assign({}, defaults, options);
 
     this.options.elk = assign(
       {
-        aspectRatio: cy.width() / cy.height(),
+        aspectRatio: cy.width() / cy.height()
       },
       defaults.elk,
       elkOptions,
@@ -160,15 +172,16 @@ class Layout {
 
   run() {
     const layout = this;
-    const {options} = this;
+    const { options } = this;
 
-    const {eles} = options;
+    const { eles } = options;
     const nodes = eles.nodes();
     const edges = eles.edges();
 
     const elk = new ELK();
     const graph = makeGraph(nodes, edges, options);
     graph['layoutOptions'] = options.elk;
+    printGraph(graph);
     elk
       .layout(graph)
       .then(() => {
