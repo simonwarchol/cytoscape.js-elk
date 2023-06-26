@@ -30,7 +30,7 @@ const getPos = function (ele, options) {
 
 const makeNode = function (node, options) {
   const k = {
-    _cyEle: node,
+    // _cyEle: node,
     id: node.id(),
   };
 
@@ -61,7 +61,7 @@ const makeNode = function (node, options) {
 
 const makeEdge = function (edge /*, options*/) {
   const k = {
-    _cyEle: edge,
+    // _cyEle: edge,
     id: edge.id(),
     source: edge.data('source'),
     target: edge.data('target'),
