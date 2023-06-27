@@ -1,7 +1,6 @@
 import ELK from 'elkjs/lib/elk.bundled.js';
 import assign from './assign';
 import defaults from './defaults';
-import _ from 'lodash';
 
 const elkOverrides = {};
 
@@ -142,16 +141,18 @@ const makeGraph = function(nodes, edges, options) {
 };
 
 const printGraph = function(graph) {
-  const myGraph = _.cloneDeep(graph);
-  myGraph['children'] = myGraph['children'].map(d => {
-    delete d['_cyEle'];
-    return d;
+  let myGraph = graph;
+  myGraph['children'] = graph['children'].map(d => {
+    let { _cyEle, ...ele } = d;
+    return ele;
   });
-  myGraph['edges'] = myGraph['edges'].map(d => {
-    delete d['_cyEle'];
-    return d;
+
+
+  myGraph['edges'] = graph['edges'].map(d => {
+    let { _cyEle, ...ele } = d;
+    return ele;
   });
-  console.log('ELK GRAPH', JSON.stringify(myGraph, null, 2));
+  console.log('ELKGRAPH', JSON.stringify(myGraph));
 };
 
 class Layout {
